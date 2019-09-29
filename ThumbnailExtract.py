@@ -3,7 +3,7 @@
 ### module import
 from bs4 import BeautifulSoup
 from pprint import pprint
-import requests, re, os
+import requests, re, os, errno
 from urllib.request import urlretrieve # add module
 
 ### create the forlder to save files
