@@ -1,0 +1,5 @@
+{
+  "python.pythonPath": "/Users/anartanimal/.pyenv/versions/3.8.0/bin/python",
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true
+}
