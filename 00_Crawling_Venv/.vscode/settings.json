@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "Scripts\\python.exe"
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--line-length", "200"],
+    "editor.formatOnSave": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}
