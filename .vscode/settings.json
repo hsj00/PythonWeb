@@ -1,5 +1,8 @@
 {
-  "python.pythonPath": "/Users/anartanimal/.pyenv/versions/3.8.0/bin/python",
+  "python.pythonPath": "/Users/anartanimal/.pyenv/versions/3.8.5/bin/python",
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length", "200"],
+  "editor.formatOnSave": true,
   "python.linting.pylintEnabled": true,
   "python.linting.enabled": true
 }
