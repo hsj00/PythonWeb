@@ -13,15 +13,22 @@
 ## - 특정 키워드 포함 기사만 스크랩
 ## - 메뉴별 주소 규칙을 확인하여 스크랩할 분야를 미리 선택을 할 수 있는 방법 구현 (전체 메뉴 주소를 확인해서 리스트로 만든 후 그중에서 선택하는 방식?)
 ## - 스크랩한 기사를 분야/헤드라인/날짜/링크 정보로 스프레드시트에 저장해서 파일로 만들기
-
+"""
+import gspread, os
+from oauth2client.service_account import ServiceAccountCredentials
 import selenium
+"""
+
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 from pprint import pprint
+from datetime import datetime
 
 # http://www.thelec.kr/news/articleList.html?page=2&total=5131&box_idxno=
 
 URL = f"http://www.thelec.kr/news/articleList.html"
+TODAY = datetime.today().strftime("%Y%m%d")
 
 # thelec.kr 전체 기사 목록을 읽어서 `html.parser`로 파싱
 thelec_results = requests.get(URL)
@@ -113,6 +120,21 @@ def InfoExt(last_pages):
     return [sect_list, title_list, author_list, date_list, add_list]
 
 
+def dataExt(last_pages):
+    # index_num = []
+    section = InfoExt(last_pages)[0]
+    title = InfoExt(last_pages)[1]
+    author = InfoExt(last_pages)[2]
+    date = InfoExt(last_pages)[3]
+    address = InfoExt(last_pages)[4]
+    # data = {"index": index_num, "section": section, "title": title, "author": author, "date": date, "address": address}
+    data = {"section": section, "title": title, "author": author, "date": date, "address": address}
+    # data_frame = pd.DataFrame(data, columns=["index", "section", "title", "author", "date", "address"])
+    data_frame = pd.DataFrame(data, columns=["section", "title", "author", "date", "address"])
+    data_frame.to_csv(f"./thelec_scrap/{TODAY}_thelec.csv")
+    data_frame.to_excel(f"./thelec_scrap/{TODAY}_thelec.xlsx")
+
+
 # 다섯가지 기사 정보를 하나의 문자열로 합친 후 리스트의 인자로 반환
 def infoComb():
     news = []
@@ -120,7 +142,8 @@ def infoComb():
     articles_on_page = thelecPageArticles()
     page_ext = InfoExt(total_page)
     for n in range(total_page * articles_on_page):
-        text_comb = f"{page_ext[0][n]} | {page_ext[1][n]} | {page_ext[2][n]} | {page_ext[3][n]} | {page_ext[4][n]}"
+        # text_comb = f"{page_ext[0][n]} | {page_ext[1][n]} | {page_ext[2][n]} | {page_ext[3][n]} | {page_ext[4][n]}"
+        text_comb = [page_ext[0][n], page_ext[1][n], page_ext[2][n], page_ext[3][n], page_ext[4][n]]
         news.append(text_comb)
     return news
 
@@ -148,8 +171,9 @@ if __name__ == "__main__":
     total_articles = thelecTotalArticle()
     total_page = thelecPages()
     articles_on_page = thelecPageArticles()
-    page_ext = InfoExt(total_page)
-    print(total_articles, total_page, articles_on_page)
-    print(len(page_ext))
-    pprint(page_ext[0][0])
-    pprint(infoComb())
+    dataExt(total_page)
+    # page_ext = InfoExt(total_page)
+    # print(total_articles, total_page, articles_on_page)
+    # print(len(page_ext))
+    # pprint(page_ext)
+    # pprint(infoComb())
