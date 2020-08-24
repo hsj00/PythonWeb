@@ -22,13 +22,14 @@ import selenium
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import openpyxl as pyxl
 from pprint import pprint
-from datetime import datetime
+from datetime import datetime, date, time
 
 # http://www.thelec.kr/news/articleList.html?page=2&total=5131&box_idxno=
 
 URL = f"http://www.thelec.kr/news/articleList.html"
-TODAY = datetime.today().strftime("%Y%m%d")
+TODAY = datetime.today().strftime("%Y-%m-%d")
 
 # thelec.kr 전체 기사 목록을 읽어서 `html.parser`로 파싱
 thelec_results = requests.get(URL)
@@ -109,7 +110,8 @@ def InfoExt(last_pages):
             date_find = table.find("div", {"class": "list-dated table-cell"})
             date_text = date_find.string
             author_list.append(date_text.split(" | ")[0])
-            date_list.append(date_text.split(" | ")[1])
+            date_edit = date_text.split(" | ")[1]
+            date_list.append(date_edit[:-6])
 
             # 기사 링크 주소를 추출해서 조합하여 반환
             add_link = table.find("a")["href"]
@@ -120,6 +122,13 @@ def InfoExt(last_pages):
     return [sect_list, title_list, author_list, date_list, add_list]
 
 
+# 추출 기사 날짜 비교
+def dateComparing(last_page):
+    OLD = date.fromisoformat()
+    pass
+
+
+# 데이터 추출 후 *.csv/*.xlsx 파일로 저장
 def dataExt(last_pages):
     # index_num = []
     section = InfoExt(last_pages)[0]
